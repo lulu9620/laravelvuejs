@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import VueAxios from 'vue-axios'
 import Axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
-import VueResource from 'vue-resource'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -12,7 +11,8 @@ import App from './components/App.vue'
 import Home from './components/Home.vue'
 import AddArticle from './components/articles/AddArticle.vue'
 import ListArticles from './components/articles/ListArticles.vue'
-import ViewArticle from './components/articles/ViewArticle.vue'
+import EditArticle from './components/articles/EditArticle.vue'
+import DeleteArticle from './components/articles/DeleteArticle.vue'
 
 //Authentication
 import Register from './components/authentication/Register.vue'
@@ -33,7 +33,8 @@ const routes = [
     {path: '/', component: Home, name: 'Home'},
     {path: '/articles', component: ListArticles, name: 'ListArticle'},
     {path: '/articles/add-article', component: AddArticle, name: 'AddArticle'},
-    {path: '/articles/:id', component: ViewArticle, name: 'ViewArticle'},
+    {path: '/articles/edit/:id', component: EditArticle, name: 'EditArticle'},
+    {path: '/articles/delete/:id', component: DeleteArticle, name: 'DeleteArticle'},
 ];
 const router = new VueRouter({
     routes,

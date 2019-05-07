@@ -14,11 +14,13 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
-        return view('articles',[
-            'articles' => $articles,
-        ]);
+       $articles = Article::all();
+        return $articles;
+    }
 
+    public function home()
+    {
+        return view('articles');
     }
 
     /**
@@ -46,37 +48,25 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function edit($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+//        $this->validate($request,[
+//            'title' => 'required',
+//            'body' => 'required',
+//        ]);
+//        $article = Article::find($id);
+//        if($article->count()){
+//            $article->update($request->all());
+//            return response()->json(['status'=>'success','msg'=>'Article updated successfully']);
+//        }else{
+//            return response()->json(['status'=>'error','msg'=>'Error in updating article']);
+//        }
+        dd('sal');
     }
 
     /**
@@ -87,6 +77,10 @@ class ArticlesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $article = Article::find($id);
+        $article->delete();
+        return response()->json('deleted!');
+
+
     }
 }

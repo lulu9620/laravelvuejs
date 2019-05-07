@@ -11,12 +11,11 @@
 |
 */
 
-Route::get('/','ArticlesController@index');
+Route::get('/','ArticlesController@home');
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('/articles/add-article', 'ArticlesController@store');
-Route::get('/articles/edit/{id}','ArticlesController@edit');
-Route::post('/articles/update/{id}','ArticlesController@update');
+Route::post('/articles/edit/{id}','ArticlesController@edit');
 Route::delete('/articles/delete/{id}', 'ArticlesController@destroy');
 Route::get('/articles','ArticlesController@index');

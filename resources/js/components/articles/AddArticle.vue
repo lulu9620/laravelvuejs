@@ -10,16 +10,16 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Title:" label-for="title">
-                            <b-form-input v-model="article.title" id="title" name="title" type="text" required
+                            <b-form-input v-model="article.title" id="title"  type="text" required
                                           placeholder="Enter title..."></b-form-input>
                         </b-form-group>
                         <b-form-group label="Image:" label-for="image"></b-form-group>
-                        <b-form-file id="image" placeholder="Choose a file..."
+                        <b-form-file id="image" v-model="article.image" placeholder="Choose a file..."
                                      drop-placeholder="Drop file here..."></b-form-file>
                     </b-col>
                     <b-col>
                         <b-form-group label="Description:" label-for="description">
-                            <b-form-textarea v-model="article.body" name="body" type="text" id="description" required
+                            <b-form-textarea v-model="article.body" type="text" id="description" required
                                              placeholder="Enter description..." rows="5"></b-form-textarea>
                         </b-form-group>
                     </b-col>
@@ -43,6 +43,7 @@
                 article: {
                     title: '',
                     body: '',
+                    selectedImage: null,
                 }
             }
         },
@@ -54,6 +55,7 @@
                 }).then(function (data) {
                     console.log(data);
                 });
+                this.$router.push({name: 'ListArticle'});
             }
         }
     }
