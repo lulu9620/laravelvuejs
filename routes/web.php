@@ -16,6 +16,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('/articles/add-article', 'ArticlesController@store');
-Route::post('/articles/edit/{id}','ArticlesController@edit');
+Route::get('/articles/edit/{id}','ArticlesController@edit');
+Route::put('/articles/editArticle/{id}','ArticlesController@editArticle');
 Route::delete('/articles/delete/{id}', 'ArticlesController@destroy');
 Route::get('/articles','ArticlesController@index');

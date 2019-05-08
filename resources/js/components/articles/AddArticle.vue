@@ -14,8 +14,8 @@
                                           placeholder="Enter title..."></b-form-input>
                         </b-form-group>
                         <b-form-group label="Image:" label-for="image"></b-form-group>
-                        <b-form-file id="image" v-model="article.image" placeholder="Choose a file..."
-                                     drop-placeholder="Drop file here..."></b-form-file>
+                        <b-form-file id="image" name="image" placeholder="Choose a file..."
+                                     drop-placeholder="Drop file here..." @change="getImage" ></b-form-file>
                     </b-col>
                     <b-col>
                         <b-form-group label="Description:" label-for="description">
@@ -43,20 +43,26 @@
                 article: {
                     title: '',
                     body: '',
-                    selectedImage: null,
+                    image: '',
                 }
             }
         },
+
         methods: {
+            getImage(e){
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(e.target.files[0]);
+                fileReader.onload = (e) => {
+                    this.article.image = e.target.result;
+                    console.log(this.article);
+                };
+            },
             addArticle: function () {
-                this.axios.post("http://127.0.0.1:8000/articles/add-article",{
-                    title:this.article.title,
-                    body:this.article.body,
-                }).then(function (data) {
-                    console.log(data);
-                });
-                this.$router.push({name: 'ListArticle'});
-            }
+                this.axios.post("http://127.0.0.1:8000/articles/add-article", this.article)
+                    .then((response) => {
+                       console.log(response);
+                    });
+            },
         }
     }
 </script>

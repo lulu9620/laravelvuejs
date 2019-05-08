@@ -14,7 +14,7 @@
                 <b-card no-body class="overflow-hidden mb-3" style="max-height: 280px;width: 100%;" v-for="article in articles" v-bind:key="article.id">
                     <b-row no-gutters>
                         <b-col lg="4">
-                            <b-card-img src="https://picsum.photos/400/400/?image=20" class="rounded-1"></b-card-img>
+                            <img class="w-100" alt="" v:bind:src="https://imgcomfort.com/Userfiles/Upload/images/illustration-geiranger.jpg"/>
                         </b-col>
                         <b-col lg="8">
                             <b-card-body>
@@ -31,8 +31,6 @@
                     </b-row>
                 </b-card>
             </b-row>
-
-
         </b-container>
     </div>
 </template>
@@ -45,8 +43,9 @@
         },
         created() {
             axios.get('http://127.0.0.1:8000/articles')
-                .then(response => this.articles = response.data);
-
+                .then((response) => {
+                    this.articles = response.data.articles;
+                });
         }
     }
 </script>

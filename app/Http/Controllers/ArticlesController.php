@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
@@ -15,7 +16,8 @@ class ArticlesController extends Controller
     public function index()
     {
        $articles = Article::all();
-        return $articles;
+        return response()->json(['articles'=> $articles]);
+
     }
 
     public function home()
@@ -37,36 +39,58 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
-        $article = new Article([
-            'title' => $request->get('title'),
-            'body' => $request->get('body'),
-        ]);
+        $article = new Article();
+        $expl = explode(',',$request->image);
+        $decode = base64_decode($expl[1]);
+        if (strpos($expl[0],'png')){
+            $extension = 'png';
+        }else{
+            $extension = 'jpg';
+        }
+        $currenttime = Carbon::now()->timestamp;
+        $filename = $currenttime. '.' . $extension;
+        $filepath = storage_path().'/'.$filename;
 
-        $article->save();
+        file_put_contents($filepath,$decode);
 
-        return response()->json('successfuly added');
+
+        $article->title = $request->input('title');
+        $article->body = $request->input('body');
+        $article->image = $filename;
+
+
+//       $article->save();
+        return response()->json(['article' => $article]);
     }
 
     /**
-     * @param Request $request
+     *
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function edit($id)
     {
-//        $this->validate($request,[
-//            'title' => 'required',
-//            'body' => 'required',
-//        ]);
-//        $article = Article::find($id);
-//        if($article->count()){
-//            $article->update($request->all());
-//            return response()->json(['status'=>'success','msg'=>'Article updated successfully']);
-//        }else{
-//            return response()->json(['status'=>'error','msg'=>'Error in updating article']);
-//        }
-        dd('sal');
+        $article = Article::find($id);
+        return response()->json(['article' => $article]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function editArticle(Request $request, $id)
+    {
+        $article = Article::find($id);
+        if(!$article){
+            return response()->json(['msg' =>'Article not found']);
+        }
+        $article->title = $request->input('title');
+        $article->body = $request->input('body');
+
+        $article->update();
+        return response()->json(['msg'=> $article]);
     }
 
     /**
@@ -79,7 +103,7 @@ class ArticlesController extends Controller
     {
         $article = Article::find($id);
         $article->delete();
-        return response()->json('deleted!');
+        return response()->json(['msg' => $article]);
 
 
     }

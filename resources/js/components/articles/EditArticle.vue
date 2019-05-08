@@ -5,11 +5,12 @@
                 <h3>Edit Article</h3>
             </b-col>
         </b-row>
-        <form @submit.prevent="updateArticle">
+        <form @submit.prevent="updateData">
+
             <b-row>
                 <b-col>
                     <b-form-group label="Title:" label-for="title">
-                        <b-form-input id="title" name="title" v-model="article.title" type="text" required
+                        <b-form-input id="title" name="title" v-model="article.title" type="text"
                                       placeholder="Enter title..."></b-form-input>
                     </b-form-group>
                     <b-form-group label="Image:" label-for="image"></b-form-group>
@@ -34,29 +35,28 @@
 
 <script>
     export default {
-        name: "EditArticle",
         data:function() {
             return {
-                article: {
-                    id: '',
-                    title: '',
-                    body: '',
-                }
+                article: [],
             }
         },
+        name: "EditArticle",
         created:function(){
-            let uri = 'http://127.0.0.1:8000/articles/edit/' +this.$route.params.id;
-            this.axios.post(uri).then((response) => {
-                this.article = response.data.data;
-                console.log(response);
-            })
+            this.getData();
         },
         methods:{
-            updateArticle(){
-                let uri = 'http://127.0.0.1:8000/articles/edit/' +this.$route.params.id;
-                this.axios.post(uri,this.article).then((response) => {
-                    this.$router.push({name: 'ListArticle'});
-                })
+             getData(){
+                this.axios.get('http://127.0.0.1:8000/articles/edit/' +this.$route.params.id)
+                    .then((response) => {
+                        this.article = response.data.article;
+                    });
+            },
+            updateData(){
+                 this.axios.put('http://127.0.0.1:8000/articles/editArticle/'+ this.$route.params.id,this.article)
+                     .then((response) => {
+                         console.log(response);
+                         this.$router.push({name: 'ListArticle'});
+                     });
             }
         }
     }

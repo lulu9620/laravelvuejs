@@ -1899,20 +1899,25 @@ __webpack_require__.r(__webpack_exports__);
       article: {
         title: '',
         body: '',
-        selectedImage: null
+        image: ''
       }
     };
   },
   methods: {
+    getImage: function getImage(e) {
+      var _this = this;
+
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
+
+      fileReader.onload = function (e) {
+        _this.article.image = e.target.result;
+        console.log(_this.article);
+      };
+    },
     addArticle: function addArticle() {
-      this.axios.post("http://127.0.0.1:8000/articles/add-article", {
-        title: this.article.title,
-        body: this.article.body
-      }).then(function (data) {
-        console.log(data);
-      });
-      this.$router.push({
-        name: 'ListArticle'
+      this.axios.post("http://127.0.0.1:8000/articles/add-article", this.article).then(function (response) {
+        console.log(response);
       });
     }
   }
@@ -1932,14 +1937,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "DeleteArticle",
   data: function data() {
@@ -1954,22 +1951,13 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    var uri = 'http://127.0.0.1:8000/articles/' + this.$route.params.id;
-    this.axios.get(uri).then(function (response) {
-      _this.article = response.data.data;
-    });
-  },
-  methods: {
-    deletePost: function deletePost() {
-      var _this2 = this;
+    this.axios["delete"]('http://127.0.0.1:8000/articles/delete/' + this.$route.params.id).then(function (response) {
+      console.log(response);
 
-      var uri = 'http://127.0.0.1:8000/articles/delete/' + this.$route.params.id;
-      this.axios["delete"](uri, this.article).then(function (response) {
-        _this2.$router.push({
-          name: 'ListArticle'
-        });
+      _this.$router.push({
+        name: 'ListArticle'
       });
-    }
+    });
   }
 });
 
@@ -2018,32 +2006,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "EditArticle",
   data: function data() {
     return {
-      article: {
-        id: '',
-        title: '',
-        body: ''
-      }
+      article: []
     };
   },
+  name: "EditArticle",
   created: function created() {
-    var _this = this;
-
-    var uri = 'http://127.0.0.1:8000/articles/edit/' + this.$route.params.id;
-    this.axios.post(uri).then(function (response) {
-      _this.article = response.data.data;
-      console.log(response);
-    });
+    this.getData();
   },
   methods: {
-    updateArticle: function updateArticle() {
+    getData: function getData() {
+      var _this = this;
+
+      this.axios.get('http://127.0.0.1:8000/articles/edit/' + this.$route.params.id).then(function (response) {
+        _this.article = response.data.article;
+      });
+    },
+    updateData: function updateData() {
       var _this2 = this;
 
-      var uri = 'http://127.0.0.1:8000/articles/edit/' + this.$route.params.id;
-      this.axios.post(uri, this.article).then(function (response) {
+      this.axios.put('http://127.0.0.1:8000/articles/editArticle/' + this.$route.params.id, this.article).then(function (response) {
+        console.log(response);
+
         _this2.$router.push({
           name: 'ListArticle'
         });
@@ -2099,8 +2086,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2111,7 +2096,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     axios.get('http://127.0.0.1:8000/articles').then(function (response) {
-      return _this.articles = response.data;
+      _this.articles = response.data.articles;
     });
   }
 });
@@ -66129,16 +66114,11 @@ var render = function() {
                       _c("b-form-file", {
                         attrs: {
                           id: "image",
+                          name: "image",
                           placeholder: "Choose a file...",
                           "drop-placeholder": "Drop file here..."
                         },
-                        model: {
-                          value: _vm.article.image,
-                          callback: function($$v) {
-                            _vm.$set(_vm.article, "image", $$v)
-                          },
-                          expression: "article.image"
-                        }
+                        on: { change: _vm.getImage }
                       })
                     ],
                     1
@@ -66232,37 +66212,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "b-container",
-    [
-      _c("b-row", { staticClass: "text-center mt-5" }, [
-        _c("div", { staticClass: "b-col text-center" }, [
-          _c("h3", [_vm._v("Do you want to delete the article ?")])
-        ]),
-        _vm._v(" "),
-        _c(
-          "form",
-          {
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.deletePost($event)
-              }
-            }
-          },
-          [
-            _c(
-              "b-button",
-              { attrs: { type: "submit", variant: "danger", name: "button" } },
-              [_vm._v("Delete!")]
-            )
-          ],
-          1
-        )
-      ])
-    ],
-    1
-  )
+  return _c("div")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -66302,7 +66252,7 @@ var render = function() {
           on: {
             submit: function($event) {
               $event.preventDefault()
-              return _vm.updateArticle($event)
+              return _vm.updateData($event)
             }
           }
         },
@@ -66322,7 +66272,6 @@ var render = function() {
                           id: "title",
                           name: "title",
                           type: "text",
-                          required: "",
                           placeholder: "Enter title..."
                         },
                         model: {
@@ -66494,19 +66443,16 @@ var render = function() {
                     "b-row",
                     { attrs: { "no-gutters": "" } },
                     [
-                      _c(
-                        "b-col",
-                        { attrs: { lg: "4" } },
-                        [
-                          _c("b-card-img", {
-                            staticClass: "rounded-1",
-                            attrs: {
-                              src: "https://picsum.photos/400/400/?image=20"
-                            }
-                          })
-                        ],
-                        1
-                      ),
+                      _c("b-col", { attrs: { lg: "4" } }, [
+                        _c("img", {
+                          staticClass: "w-100",
+                          attrs: {
+                            alt: "",
+                            "v:bind:src":
+                              "https://imgcomfort.com/Userfiles/Upload/images/illustration-geiranger.jpg"
+                          }
+                        })
+                      ]),
                       _vm._v(" "),
                       _c(
                         "b-col",
